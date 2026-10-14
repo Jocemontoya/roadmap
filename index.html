@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Roadmap · adaptabilidad, contenido y estrategia PISA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1D2540; --muted:#5D6580; --line:#D9DCE6; --bg:#FFFFFF; --panel:#F5F6FA;
+  --mate:#3B4CC0; --len:#B03468; --con:#0F7A6A; --cie:#B8700F; --pen:#6A48A8; --ext:#4E5568;
+  --risk:#C8322F; --today:#C8322F; --ok:#1E8A4C;
+  --wk:46px; --lanew:164px; --barh:30px;
+}
+@media (prefers-color-scheme: dark){
+  :root{--ink:#E7E9F2;--muted:#A3A9BE;--line:#353B50;--bg:#141826;--panel:#1C2133;--ok:#3FB872;}
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.5}
+header{padding:28px 28px 12px;max-width:1100px}
+h1{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:600;font-size:30px;line-height:1.15;margin:0 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0;max-width:70ch}
+.legend{display:flex;flex-wrap:wrap;align-items:center;gap:14px 22px;padding:14px 28px 6px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.sw{width:26px;height:12px;border-radius:3px;display:inline-block}
+.sw.fix{background:var(--ink)}
+.sw.est{background:repeating-linear-gradient(135deg,var(--muted) 0 3px,transparent 3px 6px);border:1px solid var(--muted)}
+.sw.risk{border:2px dashed var(--risk);background:transparent}
+.tools{margin-left:auto;display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tools .st{font-size:12.5px}
+.btn{font:inherit;font-size:12.5px;color:var(--ink);background:transparent;border:1px solid var(--line);border-radius:6px;padding:4px 10px;cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.btn[hidden]{display:none}
+.scroll{overflow-x:auto;margin:10px 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.grid{position:relative;min-width:max-content}
+.head{display:flex;position:sticky;top:0;background:var(--bg);z-index:3}
+.corner{flex:0 0 var(--lanew);position:sticky;left:0;background:var(--bg);z-index:4;border-right:1px solid var(--line)}
+.axis{position:relative;height:118px;flex:0 0 auto}
+.day{position:absolute;top:98px;padding-left:3px;font-size:10.5px;line-height:16px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;pointer-events:none}
+.hl{position:absolute;top:97px;height:18px;display:none;align-items:center;padding:0 6px;border-radius:3px;background:var(--hc);color:#fff;font-size:11px;font-weight:600;white-space:nowrap;pointer-events:none;z-index:2;box-shadow:0 0 0 2px var(--bg)}
+.hl.on{display:flex}
+.month{position:absolute;top:0;height:100%;border-left:1px solid var(--line);padding:6px 8px;font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:600;font-size:14px}
+.month small{display:block;font-weight:500;color:var(--muted);font-size:11px}
+.ms-label{position:absolute;font-size:11.5px;line-height:1.25;color:var(--ink);background:var(--bg);padding:1px 4px;border-left:2px solid var(--ink);white-space:nowrap}
+.ms-label.today{border-color:var(--today);color:var(--today);font-weight:600}
+.lane{display:flex;border-top:1px solid var(--line)}
+.lname{flex:0 0 var(--lanew);min-width:0;overflow-wrap:anywhere;position:sticky;left:0;z-index:3;background:var(--bg);border-right:1px solid var(--line);padding:10px 12px;font-weight:600;font-size:14px;display:flex;align-items:flex-start;gap:8px}
+.lname i{width:10px;height:10px;border-radius:2px;margin-top:6px;flex:0 0 10px}
+.track{position:relative;flex:0 0 auto}
+.vline{position:absolute;top:0;bottom:0;width:0;border-left:1px dashed var(--muted);opacity:.55;pointer-events:none;z-index:1}
+.vline.today{border-left:2px solid var(--today);opacity:.9}
+.wkline{position:absolute;top:0;bottom:0;border-left:1px solid var(--line);opacity:.45;pointer-events:none}
+.bar{position:absolute;height:var(--barh);border-radius:5px;cursor:pointer;z-index:2;border:0;padding:0;font:inherit;text-align:left;color:inherit;background:transparent}
+.bar .fill{position:absolute;inset:0;border-radius:5px}
+.bar.fix .fill{background:var(--c)}
+.bar.est .fill{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--c) 30%,transparent) 0 5px,color-mix(in srgb,var(--c) 14%,transparent) 5px 10px);border:1.5px solid var(--c)}
+.bar.risk .fill{background:color-mix(in srgb,var(--c) 12%,transparent);border:2px dashed var(--risk)}
+.bar .t{position:absolute;top:0;height:var(--barh);display:flex;align-items:center;font-size:12.5px;font-weight:500;white-space:nowrap;padding:0 8px;line-height:1}
+.bar .t .end{font-weight:400;color:var(--muted);margin-left:6px;font-variant-numeric:tabular-nums}
+.bar.fix .t.in{color:#fff}
+.bar.fix .t.in .end{color:#fff;opacity:.8}
+.bar .t.out{left:100%;padding-left:6px;color:var(--ink)}
+.ck{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;flex:0 0 15px;border-radius:50%;background:var(--ok);color:#fff;font-size:10px;font-weight:700;line-height:1}
+.bar .t .ck{margin-right:6px}
+.bar.done .fill{opacity:.35}
+.bar.done .t,.bar.done.fix .t.in{color:var(--muted)}
+.bar.done.fix .t.in .end{color:var(--muted);opacity:1}
+.bar.tbd .fill{background:repeating-linear-gradient(90deg,color-mix(in srgb,var(--c) 10%,transparent) 0 14px,transparent 14px 22px);border:1.5px dotted var(--c)}
+.bar.pt .fill{inset:auto;left:-7px;top:8px;width:14px;height:14px;border-radius:3px;transform:rotate(45deg)}
+.bar.pt .t{left:12px}
+.bar:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.bar[aria-pressed="true"] .fill{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--ink)}
+.beyond{position:absolute;right:8px;top:76px;font-size:12px;color:var(--muted);white-space:nowrap}
+.tip{position:fixed;z-index:20;pointer-events:none;background:var(--ink);color:var(--bg);font-size:12.5px;line-height:1.4;padding:7px 10px;border-radius:6px;max-width:300px;box-shadow:0 4px 14px rgba(0,0,0,.18);opacity:0;transform:translateY(-2px)}
+.tip.on{opacity:1;transform:none}
+.tip b{display:block;font-weight:600;margin-bottom:2px}
+.tip .r{display:block;margin-top:3px;font-weight:600}
+.tip .r span{font-weight:400;opacity:.75}
+.tip .dt{opacity:.75}
+@media (prefers-reduced-motion:no-preference){.tip{transition:opacity .12s,transform .12s}}
+.detail{margin:18px 28px;max-width:760px;background:var(--panel);border-radius:10px;padding:16px 18px;min-height:76px}
+.detail h2{margin:0 0 4px;font-size:17px;font-weight:600}
+.detail .meta{color:var(--muted);font-size:13px;margin:0 0 6px}
+.detail p{margin:0}
+.pop{position:fixed;z-index:30;width:320px;max-width:calc(100vw - 16px);background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;box-shadow:0 8px 28px rgba(0,0,0,.18);padding:12px 14px 14px}
+.pop[hidden]{display:none}
+.pop .ph{display:flex;align-items:flex-start;gap:10px}
+.pop .ph b{flex:1;font-size:14px;font-weight:600;line-height:1.3}
+.pop .x{font:inherit;font-size:18px;line-height:1;background:transparent;border:0;color:var(--muted);cursor:pointer;padding:0 2px}
+.pop .x:hover{color:var(--ink)}
+.pop .edit{grid-template-columns:1fr 1fr;margin:10px 0 0}
+.pop .edit .full{grid-column:1/-1}
+.pop .edit .chk{flex-direction:row;align-items:center;gap:8px;font-size:13.5px;color:var(--ink);cursor:pointer;padding-top:2px}
+.pop .edit .chk input{width:16px;height:16px;margin:0;accent-color:var(--ok);cursor:pointer}
+.tip .ok{display:block;margin-top:3px;color:var(--ok);font-weight:600}
+.tools .prog{font-size:12.5px;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
+.edit{display:grid;gap:10px 12px}
+.edit label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--muted);font-weight:500}
+.edit input{font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;color-scheme:light dark;min-width:0}
+.edit input:focus{outline:2px solid var(--ink);outline-offset:0;border-color:transparent}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px 36px;padding:6px 28px 40px;max-width:1100px}
+.cols h3{font-size:15px;font-weight:600;margin:0 0 8px;font-family:"IBM Plex Sans Condensed",sans-serif}
+.cols ul{margin:0;padding-left:18px}
+.cols li{margin:0 0 6px}
+.cols li b{font-weight:600}
+@media (prefers-reduced-motion:no-preference){.bar .fill{transition:box-shadow .15s}}
+@media (max-width:640px){:root{--lanew:104px;--wk:40px}header{padding:20px 16px 8px}h1{font-size:24px}.legend,.cols{padding-left:16px;padding-right:16px}.detail{margin:16px}.lname{font-size:12.5px;padding:8px}.tools{margin-left:0}}
+</style>
+</head>
+<body>
+<header>
+<h1>Roadmap: adaptabilidad, contenido y estrategia PISA</h1>
+<p class="sub">Primera foto al 7 de octubre de 2026, armada con los reportes de estado de los repos y el documento de Estrategia PISA. Toca una barra para editar sus fechas y responsable.</p>
+</header>
+<div class="legend">
+<span><i class="sw fix"></i>Fecha fija</span>
+<span><i class="sw est"></i>Estimado</span>
+<span><i class="sw risk"></i>En riesgo</span>
+<span><i class="sw" style="border:1.5px dotted var(--muted)"></i>Por definir</span>
+<span><i class="sw" style="background:var(--today);width:3px"></i>Hoy</span>
+<span><i class="ck" aria-hidden="true">✓</i>Finalizada</span>
+<span class="tools"><span class="prog" id="prog"></span><span class="st" id="status"></span><button type="button" class="btn" id="dl" hidden>Descargar HTML actualizado</button><button type="button" class="btn" id="reset" hidden>Restablecer</button></span>
+</div>
+<div class="scroll" id="scroll"><div class="grid" id="grid"></div></div>
+<div class="tip" id="tip" role="tooltip" aria-hidden="true"></div>
+<div class="pop" id="pop" role="dialog" aria-label="Editar actividad" hidden></div>
+<section class="detail" id="detail" aria-live="polite">
+<h2>Selecciona una barra</h2>
+<p class="meta">El detalle de cada actividad aparece aquí.</p>
+</section>
+<div class="cols">
+<div>
+<h3>Antes de todo, hoy</h3>
+<ul>
+<li>Recuperar el acceso a <b>goes-math-kg</b> y <b>goes-linguistics-kg</b> y subir lo que vive solo en la laptop: math-items, math-eval, evidencia histórica y el grafo de lenguaje.</li>
+<li>Agregar <b>.env</b> al .gitignore de knowledge-graph, que trae la llave de xAI.</li>
+<li>Mover el repo de ciencias de la cuenta personal a la organización.</li>
+</ul>
+</div>
+<div>
+<h3>Decisiones abiertas</h3>
+<ul>
+<li><b>Fecha exacta del campo de matemática:</b> final de esta semana o inicio de la próxima.</li>
+<li><b>Fecha de cierre del año escolar.</b> Decide si el campo de lenguaje y el piloto de diciembre caben.</li>
+<li><b>Evidencia de la validación experta.</b> Los repos no registran ninguna; el tablero dice que existe.</li>
+<li><b>Horas de refuerzo:</b> 2 h o 3 h semanales.</li>
+<li><b>Ciencias:</b> PISA 2015 (Estrategia) o PISA 2025 (mallas v2).</li>
+</ul>
+</div>
+<div>
+<h3>Prioridad o fecha por definir</h3>
+<ul>
+<li>Curricularización universitaria: motor de aprobación de currículos de carreras (grafo por vertical, ambición del mapa de competencias, revisión de secuencia y cobertura). Pedir requerimientos y definir alcance.</li>
+<li>Plataforma de motivación de Kira: revisar y definir prioridad.</li>
+<li>Sumo, fluidez matemática: prioridad alta, sin definición.</li>
+<li>Cursor: mapear lo hecho y acordar fechas.</li>
+<li>Tagueo y remediación: esperando estatus.</li>
+</ul>
+</div>
+</div>
+<script>
+const DAY=864e5;
+const LANES=[
+ {id:"mate",name:"Matemática",c:"var(--mate)"},
+ {id:"len",name:"Lenguaje",c:"var(--len)"},
+ {id:"pil",name:"xAI y piloto (diciembre)",c:"var(--risk)"},
+ {id:"con",name:"Contenido",c:"var(--con)"},
+ {id:"cie",name:"Ciencias",c:"var(--cie)"},
+ {id:"pen",name:"Desarrollo de Pensamiento · PISA",c:"var(--pen)"},
+ {id:"kir",name:"Kira",c:"#2F6F9F"},
+ {id:"uni",name:"Universidades",c:"#7A5C2E"},
+ {id:"ext",name:"Externos e hitos",c:"var(--ext)"},
+ {id:"cur",name:"Cursor",c:"#5B7A1E"}
+];
+/* [carril, actividad, inicio, fin, estado, nota, responsable]. Responsable vacío = "Por asignar". */
+const BASE=/*DATA*/[
+ ["mate","Preparación express del campo","2026-09-28","2026-10-09","risk","Versión canónica del grafo, tabla de especificación mínima de 5.º/6.º, QA rápido de ítems, carga y token con infraestructura. Todo comprimido para salir a campo de inmediato.","Gerardo Kuri"],
+ ["mate","Certificación en campo","2026-10-12","2026-10-16","est","500 niños de 5.º y 500 de 6.º. Fecha por fijar: final de esta semana o inicio de la próxima. Ítems sin validar al 100 %: riesgo aceptado.","Equipo IT"],
+ ["mate","Ingesta y tuneo del grafo","2026-10-19","2026-11-04","est","Granularidad y dependencias con la data de campo. Conducto log → ingesta documentado antes de recibir los datos.","Carlos Jimenez"],
+ ["mate","Contenido de remediación nativo del grafo","2026-11-05","2026-12-15","risk","Fracciones 6.º: lección + práctica sobre el grafo ya tuneado. Se produce con el pipeline del carril Contenido (template de brief de remediación, ajustes al generador, piloto de generación formato xAI y corrida masiva). Margen nulo frente a diciembre; reutilizar los borradores V1 que ya están en el LXP.","Felipe Duve"],
+ ["mate","Ítems: validación continua","2026-10-19","2026-11-27","est","Máquina de validación de ítems en carril propio; sirve después a todo el equipo de evaluación.","Gerardo Kuri"],
+ ["mate","Remediación adaptativa fracciones 6.º","2027-01-11","2027-03-31","fix","Primer trimestre, con estudiantes ubicados por la certificación en campo.","Equipo IT"],
+ ["mate","Diagnóstico amplio, ola 2","2027-02-01","2027-02-26","est","Segundo tuneo del grafo y ubicación para el POC.","Equipo IT"],
+ ["len","Pruebas de progreso + priorizar dominio","2026-10-01","2026-10-07","est","Mismo proceso que matemática, desfasado. Datos en Drive (LEC, meses 1–7, CML, Raw_Letras). Candidato: CL-INF (44 de 64 indicadores de 6.º).","Gerardo Kuri"],
+ ["len","Prerrequisitos y misconceptions del dominio","2026-10-08","2026-10-09","est","El grafo de lenguaje hoy no tiene prerrequisitos reales ni misconceptions.","Gerardo Kuri"],
+ ["len","Generador + prueba diagnóstica","2026-10-12","2026-10-16","risk","El generador de lenguaje no existe; se acelera reutilizando lo que salga de matemática. Si matemática sale bien, lenguaje se mueve rápido.","Gerardo Kuri"],
+ ["len","Certificación en campo","2026-10-19","2026-10-23","risk","Depende de que el año escolar no haya cerrado.","Equipo IT"],
+ ["len","Tuneo del grafo","2026-10-26","2026-11-06","risk","Con la data de campo de lenguaje.","Carlos Jimenez"],
+ ["len","Contenido de remediación nativo del grafo","2026-11-05","2026-12-15","risk","Mismo pipeline que matemática.","Felipe Duve"],
+ ["len","Remediación adaptativa","2027-01-11","2027-03-31","risk","Misma fecha final que matemática. Plan B: remediación estándar si el campo no alcanza.","Equipo IT"],
+ ["pil","Enviar a xAI: algoritmo de diagnóstico + ejemplos de ítems","2026-10-07","2026-10-08","est","Algoritmo de diagnóstico adaptativo para diagnosticar a los niños, ejemplos de ítems y lo que falte por confirmar.","Gerardo Kuri"],
+ ["pil","Definir el piloto","2026-10-09","2026-10-14","est","Una escuela, pocos niños. Definir dominio a diagnosticar, cómo se ubica a cada niño y qué contenido adaptable se sirve.","Gerardo Kuri y Maria Eugenia Oviedo"],
+ ["pil","Content-generation pipeline Orchestration","2026-10-15","2026-10-30","est","",""],
+ ["pil","Contenido adaptable del piloto","2026-11-05","2026-12-15","est","Subconjunto del contenido de remediación, en el dominio elegido.","xAI"],
+ ["pil","Integración del algoritmo","2026-11-30","2026-12-02","est","El algoritmo de xAI llega el 1 de diciembre.","xAI"],
+ ["pil","Piloto en escuela","2026-12-07","2026-12-11","risk","Prueba del algoritmo con niños reales antes de enero. Confirmar disponibilidad de la escuela en diciembre.","xAI y Equipo IT"],
+ ["con","Conceptos firmados + insumos congelados","2026-10-09","2026-10-16","est","Cruzar los días de fracciones con los 101 nodos del grafo; meter metadata y bundles a git o GCS y quitar rutas absolutas.","Maria Eugenia Oviedo y Alvaro Zepeda"],
+ ["con","Discovery: reformateo PISA retroactivo","2026-10-09","2026-10-16","est","Urgente. Cómo llevar a formato PISA todo el contenido ya generado de matemática y lenguaje, priorizando 7.º–9.º. Cruzar con el Ajuste Curricular de la Estrategia y ver qué cubre ya Desarrollo de Pensamiento.","Maria Eugenia Oviedo"],
+ ["con","Reformateo PISA: alcance y fechas","2026-10-19","2026-10-19","est","Se define después del discovery.","Gerardo Kuri"],
+ ["con","Template de brief de remediación","2026-10-12","2026-10-23","est","Composiciones YAML de lección, práctica, evaluación y repaso.","Maria Eugenia Oviedo"],
+ ["con","Ajustes al generador: práctica, lotes y auditoría","2026-10-19","2026-11-20","est","F05 hoy solo genera lecciones. Agregar práctica, lote persistente con reintentos y el auditor pedagógico como compuerta.","Gerardo Kuri"],
+ ["con","Piloto de generación formato xAI","2026-11-23","2026-11-27","est","Medir tiempo y costo reales por pieza.","xAI y Equipo IT"],
+ ["con","Corrida masiva: mate, luego lenguaje","2026-11-30","2026-12-16","risk","Margen nulo frente a diciembre. Reutilizar los borradores V1 de fracciones que ya están en el LXP.","xAI y Equipo IT"],
+ ["con","Integración, QA y carga","2026-11-30","2026-12-18","est","Junto con el algoritmo de xAI.","xAI y Equipo IT"],
+ ["cie","Malla v2 → briefs → clases modelo","2026-10-12","2026-11-13","est","La malla v2 ya trae microhabilidad por fase de la secuencia: es casi un brief. El grafo de ciencias entra después, para adaptabilidad.","Educación y Equipo IT"],
+ ["cie","Producción de 832 clases","2026-11-16","2027-01-29","fix","Según la Estrategia PISA.","Equipo IT"],
+ ["cie","Entrada de cohortes","2027-01-30","2027-01-30","fix","Febrero, condicionado a habilitación y materiales.",""],
+ ["pen","Quick win: priorizar temas 7.º–9.º","2026-10-05","2026-10-09","est","Con la definición de Desarrollo de Pensamiento, el formato de objeto PISA y las mallas de 7.º, 8.º y 9.º, priorizar temas y conocimientos usando el grafo (que hoy llega a 6.º y sirve como base de prerrequisitos).","Equipo IT"],
+ ["pen","Generar clases rápido con el pipeline","2026-10-19","2026-11-13","est","Mismo enfoque que Ciencias: temas priorizados → briefs → clases generadas en masa para que los autores editen. Son pocas clases (64 por grado), por eso es quick win.","Felipe Duve"],
+ ["pen","Modo PISA del generador de ítems","2026-10-05","2026-11-13","est","Alinear el formato PISA del generador (hoy en ramas sin mergear) con lo que pide Desarrollo de Pensamiento.","Felipe Duve"],
+ ["pen","Producción de 192 sesiones","2026-11-16","2027-01-29","fix","Seis autores, 32 sesiones cada uno, partiendo de las clases generadas.",""],
+ ["pen","Ciclo de intervención → PISA for Schools","2027-02-01","2027-07-04","fix","Febrero a octubre, con PISA for Schools al final de octubre de 2027.",""],
+ ["kir","Estándares → Kira","2026-10-07","2026-10-09","est","Estándares de estilo, pedagógicos y de estructura (brief), versión 1. Kira los implementa de forma nativa en su plataforma.",""],
+ ["kir","Leo Leo → Kira","2026-10-07","2026-10-09","est","Repo del motor de análisis de lectura, limpio de secretos y de datos de estudiantes antes de compartirlo.",""],
+ ["kir","Entrega de reportería (tentativa)","2026-10-07","2026-10-09","est","El alcance ya está claro; entrega tentativa esta semana.",""],
+ ["uni","Proyecto grande por definir: motor de aprobación de currículos universitarios","2026-10-07","2027-07-04","tbd","Sin fecha ni requerimientos formales. Alcance conocido: (1) grafo de conocimiento por vertical o carrera; (2) evaluar si el mapa de competencias propuesto es suficientemente ambicioso para la vertical; (3) revisar el currículo que proponen para cubrir ese mapa: secuencia didáctica, temas faltantes, cobertura insuficiente, qué inyectar; (4) emitir un dictamen de aprobación o rechazo con observaciones. Reutilizable del stack escolar: análisis de brechas (F02), curricularización (F03), auditor pedagógico y el método de construcción de grafos. Siguiente paso: pedir requerimientos y definir alcance.",""],
+ ["ext","Preproducción Estrategia PISA","2026-10-15","2026-11-14","fix","Ciencias, Desarrollo de Pensamiento y Ajuste Curricular cierran plantillas y productos modelo.",""],
+ ["ext","Ajuste curricular 6.º (clase regular)","2026-11-15","2027-01-29","fix","160 clases de matemática y 160 de lenguaje. Es la clase regular del POC.",""],
+ ["ext","Algoritmo de adaptabilidad xAI","2026-12-01","2026-12-01","fix","Llega el 1 de diciembre.",""],
+ ["ext","Integración y QA Estrategia","2027-01-04","2027-01-29","fix","",""],
+ ["ext","POC en 22 escuelas","2027-04-01","2027-06-30","fix","Adaptabilidad completa en matemática y lenguaje, clase regular más remediación.",""],
+ ["cur","Enviar documentación","2026-10-08","2026-10-12","est","",""],
+ ["cur","Construcción de agentes","2026-10-13","2026-10-23","est","",""],
+ ["cur","Figma inicia","2026-10-12","2026-10-23","est","",""]
+]/*END*/;
+const SRC='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
+const T=BASE.map(r=>r.slice());
+const iso=t=>new Date(t).toISOString().slice(0,10);
+const now=new Date(), TODAY=iso(Date.UTC(now.getFullYear(),now.getMonth(),now.getDate()));
+const MS=[
+ [TODAY,"Hoy","today",0],
+ ["2026-10-15","Preproducción",null,1],
+ ["2026-11-14","14 nov · cierre preproducción",null,2],
+ ["2026-12-01","Algoritmo xAI",null,0],
+ ["2026-12-07","Piloto xAI",null,1],
+ ["2027-01-11","Arranque enero (fecha por confirmar)",null,1],
+ ["2027-02-01","Cohortes y ola 2",null,2],
+ ["2027-04-01","POC 22 escuelas",null,0]
+];
+const css=getComputedStyle(document.documentElement);
+const WK=()=>parseFloat(css.getPropertyValue('--wk'))||46;
+const d=s=>{const[a,b,c]=s.split('-').map(Number);return Date.UTC(a,b-1,c)};
+const fmt=s=>new Date(d(s)).toLocaleDateString('es-SV',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'});
+const fs=s=>new Date(d(s)).toLocaleDateString('es-SV',{day:'numeric',month:'short',timeZone:'UTC'})+(s.startsWith('2027')?' 2027':'');
+const ST={fix:"Fecha fija",est:"Estimado",risk:"En riesgo",tbd:"Por definir"};
+const RESP=r=>(r&&r.trim())?r.trim():'Por asignar';
+const range=it=>it.pt?fmt(it.s):fmt(it.s)+' – '+fmt(it.e);
+const endTxt=it=>it.pt?fs(it.s):fs(it.e);
+const okDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s||'');
+
+/* Cambios guardados en este navegador; solo se aplican si la versión base de la actividad no cambió. */
+const KEY='roadmap-pisa-ediciones-v1';
+const k=r=>r[0]+'|'+r[1];
+/* r[7] = true cuando la actividad está finalizada. */
+const DN=r=>r[7]===true;
+const diff=(r,b)=>r[2]!==b[2]||r[3]!==b[3]||r[6]!==b[6]||DN(r)!==DN(b);
+function loadEdits(){try{const o=JSON.parse(localStorage.getItem(KEY)||'{}');T.forEach((r,i)=>{const e=o[k(r)],b=BASE[i];
+ if(e&&e.b&&e.b.slice(0,3).join('|')===[b[2],b[3],b[6]].join('|')&&(e.b.length<4||e.b[3]===DN(b))&&okDate(e.c[0])&&okDate(e.c[1])){r[2]=e.c[0];r[3]=e.c[1];r[6]=e.c[2];if(e.c.length>3)r[7]=e.c[3]===true;}});}catch(_){}}
+function changed(){return T.filter((r,i)=>diff(r,BASE[i])).length;}
+function saveEdits(){try{const o={};T.forEach((r,i)=>{const b=BASE[i];if(diff(r,b))o[k(r)]={b:[b[2],b[3],b[6],DN(b)],c:[r[2],r[3],r[6],DN(r)]};});
+ if(Object.keys(o).length)localStorage.setItem(KEY,JSON.stringify(o));else localStorage.removeItem(KEY);}catch(_){} updStatus();}
+function updStatus(){const n=changed();document.getElementById('status').textContent=n?(n===1?'1 actividad editada':n+' actividades editadas'):'';
+ document.getElementById('reset').hidden=!n;document.getElementById('dl').hidden=!n;
+ const f=T.filter(DN).length;document.getElementById('prog').innerHTML=f?'<i class="ck" aria-hidden="true">✓</i>'+f+' de '+T.length+' finalizadas':'';}
+document.getElementById('reset').addEventListener('click',()=>{if(!confirm('¿Volver a las fechas, responsables y estados originales?'))return;
+ T.forEach((r,i)=>{r[2]=BASE[i][2];r[3]=BASE[i][3];r[6]=BASE[i][6];r[7]=BASE[i][7];if(r[7]===undefined)r.length=7;});pop.hidden=true;saveEdits();build();if(SEL!=null)renderDetail(SEL);});
+document.getElementById('dl').addEventListener('click',()=>{
+ const data='[\n'+T.map(r=>' '+JSON.stringify(r)).join(',\n')+'\n]';
+ const open='/*'+'DATA*/', close='/*'+'END*/';
+ const i0=SRC.indexOf(open), i1=SRC.indexOf(close,i0);
+ const html=SRC.slice(0,i0+open.length)+data.replace(/</g,'\\u003c')+SRC.slice(i1);
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));a.download='roadmap_timeline_horizontal.html';
+ document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);});
+
+const tip=document.getElementById('tip');
+let HL=null, SEL=null, first=true;
+function showHL(it){if(!HL)return;HL.el.style.setProperty('--hc',it.c);
+ HL.el.textContent=it.pt?fs(it.s):fs(it.s)+' – '+fs(it.e);
+ HL.el.style.left=it.x0+'px';HL.el.style.minWidth=(it.pt?0:it.w)+'px';HL.el.classList.add('on');}
+function showTip(b,it){
+ showHL(it);
+ if(!pop.hidden&&it.i===SEL)return;
+ tip.innerHTML='<b></b><span class="dt"></span><span class="r">Responsable: <span></span></span>';
+ tip.querySelector('b').textContent=it.name;
+ tip.querySelector('.dt').textContent=range(it);
+ tip.querySelector('.r span').textContent=RESP(it.resp);
+ if(it.done)tip.insertAdjacentHTML('beforeend','<span class="ok">✓ Finalizada</span>');
+ const r=(it.pt?b.querySelector('.fill'):b).getBoundingClientRect();
+ tip.classList.add('on');tip.setAttribute('aria-hidden','false');
+ const tw=tip.offsetWidth,th=tip.offsetHeight,vw=document.documentElement.clientWidth,vh=window.innerHeight;
+ let left=Math.min(Math.max(8,r.left),vw-tw-8);
+ let top=r.bottom+6;if(top+th>vh-8)top=r.top-th-6;
+ tip.style.left=left+'px';tip.style.top=top+'px';
+}
+function hideTip(){if(HL)HL.el.classList.remove('on');tip.classList.remove('on');tip.setAttribute('aria-hidden','true');}
+
+function renderDetail(i){
+ const r=T[i], L=LANES.find(l=>l.id===r[0]), pt=r[2]===r[3];
+ const dt=document.getElementById('detail');
+ dt.innerHTML='<h2></h2><p class="meta"></p><p></p>';
+ dt.querySelector('h2').textContent=r[1];
+ dt.querySelector('.meta').textContent=L.name+' · '+(pt?fmt(r[2]):fmt(r[2])+' – '+fmt(r[3]))+' · '+(DN(r)?'Finalizada':ST[r[4]])+' · Responsable: '+RESP(r[6]);
+ dt.querySelector('p:last-child').textContent=r[5]||'Sin nota.';
+}
+const pop=document.getElementById('pop');
+function placePop(){if(pop.hidden||SEL==null)return;
+ const b=document.querySelector('.bar[data-i="'+SEL+'"]');if(!b)return;
+ const r=(b.classList.contains('pt')?b.querySelector('.fill'):b).getBoundingClientRect();
+ const pw=pop.offsetWidth,ph=pop.offsetHeight,vw=document.documentElement.clientWidth,vh=window.innerHeight;
+ pop.style.left=Math.min(Math.max(8,r.left),vw-pw-8)+'px';
+ let top=r.bottom+8;if(top+ph>vh-8&&r.top-ph-8>8)top=r.top-ph-8;pop.style.top=top+'px';}
+function closePop(){if(pop.hidden)return;pop.hidden=true;const b=document.querySelector('.bar[data-i="'+SEL+'"]');if(b)b.focus({preventScroll:true});hideTip();}
+function openPop(i){
+ const r=T[i];hideTip();
+ pop.innerHTML='<div class="ph"><b></b><button type="button" class="x" aria-label="Cerrar">×</button></div><div class="edit">'+
+  '<label>Inicio<input type="date" id="fS"></label>'+
+  '<label>Fin<input type="date" id="fE"></label>'+
+  '<label class="full">Responsable<input type="text" id="fR" placeholder="Por asignar" autocomplete="off"></label>'+
+  '<label class="full chk"><input type="checkbox" id="fD">Marcar como finalizada</label></div>';
+ pop.querySelector('b').textContent=r[1];
+ pop.querySelector('.x').addEventListener('click',closePop);
+ pop.hidden=false;placePop();
+ const fS=pop.querySelector('#fS'),fE=pop.querySelector('#fE'),fR=pop.querySelector('#fR');
+ fS.value=r[2];fE.value=r[3];fR.value=r[6]||'';fE.min=r[2];
+ const fD=pop.querySelector('#fD');fD.checked=DN(r);
+ fD.addEventListener('change',()=>{if(fD.checked)r[7]=true;else r.length=7;saveEdits();build();renderDetail(i);placePop();});
+ fS.focus({preventScroll:true});
+ const apply=()=>{saveEdits();build();renderDetail(i);placePop();};
+ fS.addEventListener('input',()=>{if(!okDate(fS.value))return;r[2]=fS.value;if(d(r[3])<d(r[2])){r[3]=r[2];fE.value=r[3];}fE.min=r[2];apply();});
+ fE.addEventListener('input',()=>{if(!okDate(fE.value))return;r[3]=d(fE.value)<d(r[2])?r[2]:fE.value;apply();});
+ fE.addEventListener('change',()=>{fE.value=r[3];});
+ fR.addEventListener('input',()=>{r[6]=fR.value;apply();});
+}
+
+function bounds(){let mn=Date.UTC(2026,8,28),mx=Date.UTC(2027,6,5);
+ T.forEach(r=>{mn=Math.min(mn,d(r[2]));mx=Math.max(mx,d(r[3])+7*DAY);});
+ mn-=((new Date(mn).getUTCDay()+6)%7)*DAY;return[mn,mx];}
+
+function build(){
+ const sc=document.getElementById('scroll'), keep=sc.scrollLeft;
+ const [START,END]=bounds();
+ const wk=WK(), px=wk/7, W=Math.ceil((END-START)/DAY)*px, x=t=>(t-START)/DAY*px;
+ const grid=document.getElementById('grid'); grid.innerHTML='';
+ const meas=document.createElement('canvas').getContext('2d');
+ const mw=(t,w)=>{meas.font=w+' 12.5px "IBM Plex Sans", sans-serif';return meas.measureText(t).width;};
+ const head=document.createElement('div'); head.className='head';
+ head.innerHTML='<div class="corner"></div>';
+ const axis=document.createElement('div'); axis.className='axis'; axis.style.width=W+'px';
+ const months=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+ for(let y=new Date(START).getUTCFullYear(),m=new Date(START).getUTCMonth();;){const t=Date.UTC(y,m,1);if(t>=END)break;const nx=Date.UTC(m==11?y+1:y,(m+1)%12,1);
+  const el=document.createElement('div');el.className='month';el.style.left=Math.max(0,x(t))+'px';const w=x(Math.min(nx,END))-Math.max(0,x(t));el.style.width=w+'px';
+  if(w>=44)el.innerHTML=months[m]+'<small>'+y+'</small>';axis.appendChild(el);m++;if(m==12){m=0;y++;}}
+ MS.forEach(([s,l,kk,row])=>{const el=document.createElement('div');el.className='ms-label'+(kk?' '+kk:'');el.textContent=l;el.style.left=x(d(s))+'px';el.style.top=(40+row*18)+'px';axis.appendChild(el);});
+ for(let t=START;t<END;t+=7*DAY){const dy=document.createElement('div');dy.className='day';dy.style.left=x(t)+'px';dy.textContent=new Date(t).getUTCDate();axis.appendChild(dy);}
+ const hl=document.createElement('div');hl.className='hl';axis.appendChild(hl);HL={el:hl};
+ const bey=document.createElement('div');bey.className='beyond';bey.textContent='→ oct 2027 · PISA for Schools';axis.appendChild(bey);
+ head.appendChild(axis); grid.appendChild(head);
+ LANES.forEach(L=>{
+  const items=[];T.forEach((r,i)=>{if(r[0]===L.id)items.push({i,lane:r[0],name:r[1],s:r[2],e:r[3],st:r[4],note:r[5],resp:r[6],done:DN(r),c:L.c});});
+  const rows=[];
+  items.forEach(it=>{const x0=x(d(it.s)),x1=x(d(it.e)+DAY),pt=it.s===it.e,w=pt?0:x1-x0,tw=mw(it.name,500)+6+mw(endTxt(Object.assign({pt},it)),400)+18+(it.done?21:0);
+   it.x0=x0;it.w=w;it.pt=pt;it.inside=!pt&&tw+20<=w;it.ext=x0+(pt?tw+12:(it.inside?w:w+tw))+20;
+   let r=rows.findIndex(end=>end<=x0);if(r<0){r=rows.length;rows.push(0)}rows[r]=it.ext;it.row=r;});
+  const lane=document.createElement('div');lane.className='lane';
+  const ln=document.createElement('div');ln.className='lname';ln.innerHTML='<i style="background:'+L.c+'"></i><span>'+L.name+'</span>';
+  const tr=document.createElement('div');tr.className='track';const H=Math.max(1,rows.length)*(30+8)+14;tr.style.width=W+'px';tr.style.height=H+'px';
+  for(let t=START;t<END;t+=7*DAY){const w=document.createElement('div');w.className='wkline';w.style.left=x(t)+'px';tr.appendChild(w);}
+  MS.forEach(([s,,kk])=>{const v=document.createElement('div');v.className='vline'+(kk?' '+kk:'');v.style.left=x(d(s))+'px';tr.appendChild(v);});
+  items.forEach(it=>{const b=document.createElement('button');b.type='button';b.className='bar '+it.st+(it.pt?' pt':'')+(it.done?' done':'');b.style.setProperty('--c',L.c);b.dataset.i=it.i;
+   b.style.left=it.x0+'px';b.style.top=(8+it.row*38)+'px';b.style.width=(it.pt?0:it.w)+'px';b.setAttribute('aria-pressed',String(it.i===SEL));
+   b.setAttribute('aria-label',it.name+', '+fmt(it.s)+(it.pt?'':' a '+fmt(it.e))+', '+(it.done?'Finalizada':ST[it.st])+', responsable: '+RESP(it.resp));
+   const t=document.createElement('span');t.className='t '+(it.inside?'in':'out');if(it.done){const c=document.createElement('i');c.className='ck';c.setAttribute('aria-hidden','true');c.textContent='✓';t.appendChild(c);}t.appendChild(document.createTextNode(it.name));
+   const en=document.createElement('span');en.className='end';en.textContent=endTxt(it);t.appendChild(en);
+   b.innerHTML='<span class="fill"></span>';b.appendChild(t);
+   b.addEventListener('mouseenter',()=>showTip(b,it));b.addEventListener('mouseleave',hideTip);
+   b.addEventListener('focus',()=>showTip(b,it));b.addEventListener('blur',hideTip);
+   b.addEventListener('click',()=>{SEL=it.i;document.querySelectorAll('.bar[aria-pressed="true"]').forEach(o=>o.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');renderDetail(it.i);openPop(it.i);});
+   tr.appendChild(b);});
+  lane.appendChild(ln);lane.appendChild(tr);grid.appendChild(lane);
+ });
+ sc.scrollLeft=first?0:keep;first=false;
+}
+document.getElementById('scroll').addEventListener('scroll',()=>{hideTip();placePop();},{passive:true});
+addEventListener('scroll',placePop,{passive:true});
+document.addEventListener('mousedown',e=>{if(!pop.hidden&&!pop.contains(e.target)&&!e.target.closest('.bar'))closePop();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePop();});
+loadEdits();updStatus();
+(document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(build);
+let rt;addEventListener('resize',()=>{hideTip();clearTimeout(rt);rt=setTimeout(()=>{build();placePop();},150)});
+addEventListener('scroll',hideTip,{passive:true});
+</script>
+</body>
+</html>
