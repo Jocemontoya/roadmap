@@ -48,6 +48,8 @@ h1{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:
 .lane{display:flex;border-top:1px solid var(--line)}
 .lname{flex:0 0 var(--lanew);min-width:0;overflow-wrap:anywhere;position:sticky;left:0;z-index:3;background:var(--bg);border-right:1px solid var(--line);padding:10px 12px;font-weight:600;font-size:14px;display:flex;align-items:flex-start;gap:8px}
 .lname i{width:10px;height:10px;border-radius:2px;margin-top:6px;flex:0 0 10px}
+.lname small{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;font-weight:500;color:var(--muted);line-height:1.25}
+.lname small i{margin-top:0}
 .track{position:relative;flex:0 0 auto}
 .vline{position:absolute;top:0;bottom:0;width:0;border-left:1px dashed var(--muted);opacity:.55;pointer-events:none;z-index:1}
 .vline.today{border-left:2px solid var(--today);opacity:.9}
@@ -164,11 +166,13 @@ h1{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:
 const DAY=864e5;
 const LANES=[
  {id:"mate",name:"Diagnóstico de Grafo de matemática y lenguaje",c:"var(--mate)"},
- {id:"pil",name:"xAI y piloto (diciembre)",c:"var(--risk)"},
- {id:"con",name:"Contenido",c:"var(--con)"},
- {id:"cie",name:"Ciencias",c:"var(--cie)"},
- {id:"pen",name:"Desarrollo de Pensamiento",c:"var(--pen)"}
+ {id:"pil",name:"xAI y piloto (diciembre)",c:"var(--risk)",cascade:true},
+ {id:"con",name:"Contenido",c:"var(--con)",cascade:true},
+ {id:"cp",name:"Ciencias y Desarrollo de Pensamiento",c:"var(--cie)",subs:[{id:"cie",name:"Ciencias",c:"var(--cie)"},{id:"pen",name:"Desarrollo de Pensamiento",c:"var(--pen)"}]}
 ];
+/* Carril de una actividad y su color (los carriles unificados conservan el color de cada materia). */
+const laneOf=id=>LANES.find(l=>l.id===id||(l.subs&&l.subs.some(s=>s.id===id)));
+const subOf=(L,id)=>L.subs?L.subs.find(s=>s.id===id):L;
 /* [carril, actividad, inicio, fin, estado, nota, responsable]. Responsable vacío = "Por asignar". */
 const BASE=/*DATA*/[
  ["mate","Preparación express del campo","2026-09-28","2026-10-09","risk","Versión canónica del grafo, tabla de especificación mínima de 5.º/6.º, QA rápido de ítems, carga y token con infraestructura. Todo comprimido para salir a campo de inmediato.","Gerardo Kuri"],
@@ -188,8 +192,7 @@ const BASE=/*DATA*/[
  ["pil","Integración","2026-11-30","2026-12-02","est","El algoritmo de xAI llega el 1 de diciembre.","xAI"],
  ["pil","Piloto en escuela","2026-12-07","2026-12-11","risk","Prueba del algoritmo con niños reales antes de enero. Confirmar disponibilidad de la escuela en diciembre.","xAI y Equipo IT"],
  ["con","Conceptos firmados + insumos congelados","2026-10-09","2026-10-16","est","Cruzar los días de fracciones con los 101 nodos del grafo; meter metadata y bundles a git o GCS y quitar rutas absolutas.","Maria Eugenia Oviedo y Alvaro Zepeda"],
- ["con","Discovery: reformateo PISA retroactivo","2026-10-09","2026-10-16","est","Urgente. Cómo llevar a formato PISA todo el contenido ya generado de matemática y lenguaje, priorizando 7.º–9.º. Cruzar con el Ajuste Curricular de la Estrategia y ver qué cubre ya Desarrollo de Pensamiento.","Maria Eugenia Oviedo"],
- ["con","Reformateo PISA: alcance y fechas","2026-10-19","2026-10-19","est","Se define después del discovery.","Gerardo Kuri"],
+ ["con","Definición de items a integrar de PISA","2026-10-09","2026-10-16","est","Urgente. Cómo llevar a formato PISA todo el contenido ya generado de matemática y lenguaje, priorizando 7.º–9.º. Cruzar con el Ajuste Curricular de la Estrategia y ver qué cubre ya Desarrollo de Pensamiento.","Maria Eugenia Oviedo"],
  ["con","Ajustes al generador: práctica, lotes y auditoría","2026-10-19","2026-11-20","est","F05 hoy solo genera lecciones. Agregar práctica, lote persistente con reintentos y el auditor pedagógico como compuerta.","Gerardo Kuri"],
  ["con","Piloto de generación formato xAI","2026-11-23","2026-11-27","est","Medir tiempo y costo reales por pieza.","xAI y Equipo IT"],
  ["con","Corrida masiva: mate, luego lenguaje","2026-11-30","2026-12-16","risk","Margen nulo frente a diciembre. Reutilizar los borradores V1 de fracciones que ya están en el LXP.","xAI y Equipo IT"],
@@ -276,7 +279,7 @@ function showTip(b,it){
 function hideTip(){if(HL)HL.el.classList.remove('on');tip.classList.remove('on');tip.setAttribute('aria-hidden','true');}
 
 function renderDetail(i){
- const r=T[i], L=LANES.find(l=>l.id===r[0]), pt=r[2]===r[3];
+ const r=T[i], L=subOf(laneOf(r[0]),r[0]), pt=r[2]===r[3];
  const dt=document.getElementById('detail');
  dt.innerHTML='<h2></h2><p class="meta"></p><p></p>';
  dt.querySelector('h2').textContent=r[1];
@@ -337,17 +340,18 @@ function build(){
  const bey=document.createElement('div');bey.className='beyond';bey.textContent='→ oct 2027 · PISA for Schools';axis.appendChild(bey);
  head.appendChild(axis); grid.appendChild(head);
  LANES.forEach(L=>{
-  const items=[];T.forEach((r,i)=>{if(r[0]===L.id)items.push({i,lane:r[0],name:r[1],s:r[2],e:r[3],st:r[4],note:r[5],resp:r[6],done:DN(r),c:L.c});});
+  const items=[];T.forEach((r,i)=>{if(laneOf(r[0])===L)items.push({i,lane:r[0],name:r[1],s:r[2],e:r[3],st:r[4],note:r[5],resp:r[6],done:DN(r),c:subOf(L,r[0]).c});});
+  if(L.cascade)items.sort((a,b)=>d(a.s)-d(b.s)||d(a.e)-d(b.e)||a.i-b.i);
   const rows=[];
   items.forEach(it=>{const x0=x(d(it.s)),x1=x(d(it.e)+DAY),pt=it.s===it.e,w=pt?0:x1-x0,tw=mw(it.name,500)+6+mw(endTxt(Object.assign({pt},it)),400)+18+(it.done?21:0);
    it.x0=x0;it.w=w;it.pt=pt;it.inside=!pt&&tw+20<=w;it.ext=x0+(pt?tw+12:(it.inside?w:w+tw))+20;
-   let r=rows.findIndex(end=>end<=x0);if(r<0){r=rows.length;rows.push(0)}rows[r]=it.ext;it.row=r;});
+   let r=L.cascade?-1:rows.findIndex(end=>end<=x0);if(r<0){r=rows.length;rows.push(0)}rows[r]=it.ext;it.row=r;});
   const lane=document.createElement('div');lane.className='lane';
-  const ln=document.createElement('div');ln.className='lname';ln.innerHTML='<i style="background:'+L.c+'"></i><span>'+L.name+'</span>';
+  const ln=document.createElement('div');ln.className='lname';ln.innerHTML=L.subs?'<span>'+L.name+L.subs.map(s=>'<small><i style="background:'+s.c+'"></i>'+s.name+'</small>').join('')+'</span>':'<i style="background:'+L.c+'"></i><span>'+L.name+'</span>';
   const tr=document.createElement('div');tr.className='track';const H=Math.max(1,rows.length)*(30+8)+14;tr.style.width=W+'px';tr.style.height=H+'px';
   for(let t=START;t<END;t+=7*DAY){const w=document.createElement('div');w.className='wkline';w.style.left=x(t)+'px';tr.appendChild(w);}
   MS.forEach(([s,,kk])=>{const v=document.createElement('div');v.className='vline'+(kk?' '+kk:'');v.style.left=x(d(s))+'px';tr.appendChild(v);});
-  items.forEach(it=>{const b=document.createElement('button');b.type='button';b.className='bar '+it.st+(it.pt?' pt':'')+(it.done?' done':'');b.style.setProperty('--c',L.c);b.dataset.i=it.i;
+  items.forEach(it=>{const b=document.createElement('button');b.type='button';b.className='bar '+it.st+(it.pt?' pt':'')+(it.done?' done':'');b.style.setProperty('--c',it.c);b.dataset.i=it.i;
    b.style.left=it.x0+'px';b.style.top=(8+it.row*38)+'px';b.style.width=(it.pt?0:it.w)+'px';b.setAttribute('aria-pressed',String(it.i===SEL));
    b.setAttribute('aria-label',it.name+', '+fmt(it.s)+(it.pt?'':' a '+fmt(it.e))+', '+(it.done?'Finalizada':ST[it.st])+', responsable: '+RESP(it.resp));
    const t=document.createElement('span');t.className='t '+(it.inside?'in':'out');if(it.done){const c=document.createElement('i');c.className='ck';c.setAttribute('aria-hidden','true');c.textContent='✓';t.appendChild(c);}t.appendChild(document.createTextNode(it.name));
