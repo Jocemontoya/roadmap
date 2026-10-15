@@ -168,11 +168,11 @@ const LANES=[
  {id:"pil",name:"xAI y piloto (diciembre)",c:"var(--risk)"},
  {id:"con",name:"Contenido",c:"var(--con)"},
  {id:"cie",name:"Ciencias",c:"var(--cie)"},
- {id:"pen",name:"Desarrollo de Pensamiento · PISA",c:"var(--pen)"},
+ {id:"pen",name:"Desarrollo de Pensamiento",c:"var(--pen)"},
+ {id:"cur",name:"Cursor",c:"#5B7A1E"},
  {id:"kir",name:"Kira",c:"#2F6F9F"},
  {id:"uni",name:"Universidades",c:"#7A5C2E"},
- {id:"ext",name:"Externos e hitos",c:"var(--ext)"},
- {id:"cur",name:"Cursor",c:"#5B7A1E"}
+ {id:"ext",name:"Externos e hitos",c:"var(--ext)"}
 ];
 /* [carril, actividad, inicio, fin, estado, nota, responsable]. Responsable vacío = "Por asignar". */
 const BASE=/*DATA*/[
@@ -194,6 +194,7 @@ const BASE=/*DATA*/[
  ["pil","Definir el piloto","2026-10-09","2026-10-14","est","Una escuela, pocos niños. Definir dominio a diagnosticar, cómo se ubica a cada niño y qué contenido adaptable se sirve.","Gerardo Kuri y Maria Eugenia Oviedo"],
  ["pil","Content-generation pipeline Orchestration","2026-10-15","2026-10-30","est","",""],
  ["pil","Contenido adaptable del piloto","2026-11-05","2026-12-15","est","Subconjunto del contenido de remediación, en el dominio elegido.","xAI"],
+ ["pil","Pruebas QA","2026-11-18","2026-11-27","est","","Equipo GOES"],
  ["pil","Integración del algoritmo","2026-11-30","2026-12-02","est","El algoritmo de xAI llega el 1 de diciembre.","xAI"],
  ["pil","Piloto en escuela","2026-12-07","2026-12-11","risk","Prueba del algoritmo con niños reales antes de enero. Confirmar disponibilidad de la escuela en diciembre.","xAI y Equipo IT"],
  ["con","Conceptos firmados + insumos congelados","2026-10-09","2026-10-16","est","Cruzar los días de fracciones con los 101 nodos del grafo; meter metadata y bundles a git o GCS y quitar rutas absolutas.","Maria Eugenia Oviedo y Alvaro Zepeda"],
@@ -208,6 +209,7 @@ const BASE=/*DATA*/[
  ["cie","Producción de 832 clases","2026-11-16","2027-01-29","fix","Según la Estrategia PISA.","Equipo IT"],
  ["cie","Entrada de cohortes","2027-01-30","2027-01-30","fix","Febrero, condicionado a habilitación y materiales.",""],
  ["pen","Quick win: priorizar temas 7.º–9.º","2026-10-05","2026-10-09","est","Con la definición de Desarrollo de Pensamiento, el formato de objeto PISA y las mallas de 7.º, 8.º y 9.º, priorizar temas y conocimientos usando el grafo (que hoy llega a 6.º y sirve como base de prerrequisitos).","Equipo IT"],
+ ["pen","Entrega de insumos para la construcción de template","2026-10-12","2026-10-14","est","",""],
  ["pen","Generar clases rápido con el pipeline","2026-10-19","2026-11-13","est","Mismo enfoque que Ciencias: temas priorizados → briefs → clases generadas en masa para que los autores editen. Son pocas clases (64 por grado), por eso es quick win.","Felipe Duve"],
  ["pen","Modo PISA del generador de ítems","2026-10-05","2026-11-13","est","Alinear el formato PISA del generador (hoy en ramas sin mergear) con lo que pide Desarrollo de Pensamiento.","Felipe Duve"],
  ["pen","Producción de 192 sesiones","2026-11-16","2027-01-29","fix","Seis autores, 32 sesiones cada uno, partiendo de las clases generadas.",""],
@@ -223,7 +225,7 @@ const BASE=/*DATA*/[
  ["ext","POC en 22 escuelas","2027-04-01","2027-06-30","fix","Adaptabilidad completa en matemática y lenguaje, clase regular más remediación.",""],
  ["cur","Enviar documentación","2026-10-08","2026-10-12","est","",""],
  ["cur","Construcción de agentes","2026-10-13","2026-10-23","est","",""],
- ["cur","Figma inicia","2026-10-12","2026-10-23","est","",""]
+ ["cur","En construcción Figmas (CMS)","2026-10-12","2026-10-23","est","",""]
 ]/*END*/;
 const SRC='<!DOCTYPE html>\n'+document.documentElement.outerHTML;
 const T=BASE.map(r=>r.slice());
