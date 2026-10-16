@@ -92,6 +92,7 @@ h1{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:
 .pop .ph b{flex:1;font-size:14px;font-weight:600;line-height:1.3}
 .pop .x{font:inherit;font-size:18px;line-height:1;background:transparent;border:0;color:var(--muted);cursor:pointer;padding:0 2px}
 .pop .x:hover{color:var(--ink)}
+.pop .pn{margin:6px 0 0;font-size:12.5px;line-height:1.45;color:var(--muted)}
 .pop .edit{grid-template-columns:1fr 1fr;margin:10px 0 0}
 .pop .edit .full{grid-column:1/-1}
 .pop .edit .chk{flex-direction:row;align-items:center;gap:8px;font-size:13.5px;color:var(--ink);cursor:pointer;padding-top:2px}
@@ -128,40 +129,6 @@ h1{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:
 <div class="scroll" id="scroll"><div class="grid" id="grid"></div></div>
 <div class="tip" id="tip" role="tooltip" aria-hidden="true"></div>
 <div class="pop" id="pop" role="dialog" aria-label="Editar actividad" hidden></div>
-<section class="detail" id="detail" aria-live="polite">
-<h2>Selecciona una barra</h2>
-<p class="meta">El detalle de cada actividad aparece aquí.</p>
-</section>
-<div class="cols">
-<div>
-<h3>Antes de todo, hoy</h3>
-<ul>
-<li>Recuperar el acceso a <b>goes-math-kg</b> y <b>goes-linguistics-kg</b> y subir lo que vive solo en la laptop: math-items, math-eval, evidencia histórica y el grafo de lenguaje.</li>
-<li>Agregar <b>.env</b> al .gitignore de knowledge-graph, que trae la llave de xAI.</li>
-<li>Mover el repo de ciencias de la cuenta personal a la organización.</li>
-</ul>
-</div>
-<div>
-<h3>Decisiones abiertas</h3>
-<ul>
-<li><b>Fecha exacta del campo de matemática:</b> final de esta semana o inicio de la próxima.</li>
-<li><b>Fecha de cierre del año escolar.</b> Decide si el campo de lenguaje y el piloto de diciembre caben.</li>
-<li><b>Evidencia de la validación experta.</b> Los repos no registran ninguna; el tablero dice que existe.</li>
-<li><b>Horas de refuerzo:</b> 2 h o 3 h semanales.</li>
-<li><b>Ciencias:</b> PISA 2015 (Estrategia) o PISA 2025 (mallas v2).</li>
-</ul>
-</div>
-<div>
-<h3>Prioridad o fecha por definir</h3>
-<ul>
-<li>Curricularización universitaria: motor de aprobación de currículos de carreras (grafo por vertical, ambición del mapa de competencias, revisión de secuencia y cobertura). Pedir requerimientos y definir alcance.</li>
-<li>Plataforma de motivación de Kira: revisar y definir prioridad.</li>
-<li>Sumo, fluidez matemática: prioridad alta, sin definición.</li>
-<li>Cursor: mapear lo hecho y acordar fechas.</li>
-<li>Tagueo y remediación: esperando estatus.</li>
-</ul>
-</div>
-</div>
 <script>
 const DAY=864e5;
 const LANES=[
@@ -279,6 +246,7 @@ function showTip(b,it){
 function hideTip(){if(HL)HL.el.classList.remove('on');tip.classList.remove('on');tip.setAttribute('aria-hidden','true');}
 
 function renderDetail(i){
+ if(!document.getElementById('detail'))return;
  const r=T[i], L=subOf(laneOf(r[0]),r[0]), pt=r[2]===r[3];
  const dt=document.getElementById('detail');
  dt.innerHTML='<h2></h2><p class="meta"></p><p></p>';
@@ -302,6 +270,7 @@ function openPop(i){
   '<label class="full">Responsable<input type="text" id="fR" placeholder="Por asignar" autocomplete="off"></label>'+
   '<label class="full chk"><input type="checkbox" id="fD">Marcar como finalizada</label></div>';
  pop.querySelector('b').textContent=r[1];
+ if(r[5]){const n=document.createElement('p');n.className='pn';n.textContent=r[5];pop.querySelector('.ph').after(n);}
  pop.querySelector('.x').addEventListener('click',closePop);
  pop.hidden=false;placePop();
  const fS=pop.querySelector('#fS'),fE=pop.querySelector('#fE'),fR=pop.querySelector('#fR');
