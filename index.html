@@ -124,7 +124,7 @@ h1{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-weight:
 <span><i class="sw" style="border:1.5px dotted var(--muted)"></i>Por definir</span>
 <span><i class="sw" style="background:var(--today);width:3px"></i>Hoy</span>
 <span><i class="ck" aria-hidden="true">✓</i>Finalizada</span>
-<span class="tools"><span class="prog" id="prog"></span><span class="st" id="status"></span><button type="button" class="btn" id="dl" hidden>Descargar HTML actualizado</button><button type="button" class="btn" id="reset" hidden>Restablecer</button></span>
+<span class="tools"><span class="prog" id="prog"></span><span class="st" id="status"></span><button type="button" class="btn" id="dl" title="Descarga el roadmap con tus fechas, responsables y actividades finalizadas">Descargar HTML actualizado</button><button type="button" class="btn" id="reset" hidden>Restablecer</button></span>
 </div>
 <div class="scroll" id="scroll"><div class="grid" id="grid"></div></div>
 <div class="tip" id="tip" role="tooltip" aria-hidden="true"></div>
@@ -211,7 +211,7 @@ function changed(){return T.filter((r,i)=>diff(r,BASE[i])).length;}
 function saveEdits(){try{const o={};T.forEach((r,i)=>{const b=BASE[i];if(diff(r,b))o[k(r)]={b:[b[2],b[3],b[6],DN(b)],c:[r[2],r[3],r[6],DN(r)]};});
  if(Object.keys(o).length)localStorage.setItem(KEY,JSON.stringify(o));else localStorage.removeItem(KEY);}catch(_){} updStatus();}
 function updStatus(){const n=changed();document.getElementById('status').textContent=n?(n===1?'1 actividad editada':n+' actividades editadas'):'';
- document.getElementById('reset').hidden=!n;document.getElementById('dl').hidden=!n;
+ document.getElementById('reset').hidden=!n;
  const f=T.filter(DN).length;document.getElementById('prog').innerHTML=f?'<i class="ck" aria-hidden="true">✓</i>'+f+' de '+T.length+' finalizadas':'';}
 document.getElementById('reset').addEventListener('click',()=>{if(!confirm('¿Volver a las fechas, responsables y estados originales?'))return;
  T.forEach((r,i)=>{r[2]=BASE[i][2];r[3]=BASE[i][3];r[6]=BASE[i][6];r[7]=BASE[i][7];if(r[7]===undefined)r.length=7;});pop.hidden=true;saveEdits();build();if(SEL!=null)renderDetail(SEL);});
